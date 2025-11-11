@@ -5,9 +5,69 @@ const App = () => {
     const [currentPage, setCurrentPage] = useState('login');
     const [isLogin, setIsLogin] = useState(true);
     const [user, setUser] = useState(null);
+    const [selectedChat, setSelectedChat] = useState(null);
+    const [messageText, setMessageText] = useState('');
 
     // Currency for Kenya
     const currency = 'KSh';
+
+    // Mock chat data
+    const chats = [
+        {
+            id: 1,
+            name: "Sarah Johnson",
+            lastMessage: "Thanks for the tutoring session!",
+            time: "10m ago",
+            unread: 2,
+            avatar: "SJ",
+            messages: [
+                { id: 1, sender: "them", text: "Hi! I'm interested in your math tutoring services", time: "2:30 PM" },
+                { id: 2, sender: "me", text: "Hello! I'd be happy to help. What topics do you need help with?", time: "2:32 PM" },
+                { id: 3, sender: "them", text: "I'm struggling with Calculus, specifically derivatives", time: "2:35 PM" },
+                { id: 4, sender: "me", text: "Perfect! I can help with that. When would you like to schedule a session?", time: "2:36 PM" },
+                { id: 5, sender: "them", text: "Thanks for the tutoring session!", time: "Just now" }
+            ]
+        },
+        {
+            id: 2,
+            name: "Mike Chen",
+            lastMessage: "The design looks great!",
+            time: "1h ago",
+            unread: 0,
+            avatar: "MC",
+            messages: [
+                { id: 1, sender: "them", text: "Can you create a logo for my project?", time: "11:00 AM" },
+                { id: 2, sender: "me", text: "Sure! What's the project about?", time: "11:15 AM" },
+                { id: 3, sender: "them", text: "The design looks great!", time: "1h ago" }
+            ]
+        },
+        {
+            id: 3,
+            name: "Alex Kumar",
+            lastMessage: "Payment sent!",
+            time: "3h ago",
+            unread: 0,
+            avatar: "AK",
+            messages: [
+                { id: 1, sender: "them", text: "Hi, are your CS notes still available?", time: "Yesterday" },
+                { id: 2, sender: "me", text: "Yes! Which topic are you interested in?", time: "Yesterday" },
+                { id: 3, sender: "them", text: "Payment sent!", time: "3h ago" }
+            ]
+        },
+        {
+            id: 4,
+            name: "Emma Williams",
+            lastMessage: "When can you review my essay?",
+            time: "5h ago",
+            unread: 1,
+            avatar: "EW",
+            messages: [
+                { id: 1, sender: "them", text: "I need help editing my essay", time: "Yesterday" },
+                { id: 2, sender: "me", text: "I can help! Send it over", time: "Yesterday" },
+                { id: 3, sender: "them", text: "When can you review my essay?", time: "5h ago" }
+            ]
+        }
+    ];
 
     // Updated Color palette - greens, dark teal, tan/beige, gold
     const colors = {
@@ -306,12 +366,18 @@ const App = () => {
                                 <Briefcase size={20} />
                                 <span style={{ fontSize: '0.7rem' }}>Services</span>
                             </button>
-                            <button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', position: 'relative', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}>
+                            <button
+                                onClick={() => setCurrentPage('chat')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', position: 'relative', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
                                 <MessageCircle size={20} />
                                 <span style={{ fontSize: '0.7rem' }}>Messages</span>
                                 <span style={{ position: 'absolute', top: '-0.25rem', right: '0.25rem', background: colors.gold, color: colors.darkTeal, fontSize: '0.65rem', width: '1.1rem', height: '1.1rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>3</span>
                             </button>
-                            <button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}>
+                            <button
+                                onClick={() => setCurrentPage('profile')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
                                 <User size={20} />
                                 <span style={{ fontSize: '0.7rem' }}>Profile</span>
                             </button>
@@ -333,57 +399,6 @@ const App = () => {
                         Welcome back, {user?.name}! 🎉
                     </h2>
                     <p style={{ color: '#6b7280', fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)' }}>Your marketplace dashboard is ready</p>
-                </div>
-
-                {/* Credit Balance Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
-                    <div style={{ background: `linear-gradient(135deg, ${colors.darkTeal} 0%, ${colors.teal} 100%)`, borderRadius: '1.25rem', padding: '1.5rem', color: 'white', boxShadow: '0 10px 25px rgba(13, 77, 77, 0.3)', position: 'relative', overflow: 'hidden', minHeight: '200px' }}>
-                        <div style={{ position: 'absolute', top: '-3rem', right: '-3rem', width: '12rem', height: '12rem', background: colors.gold, borderRadius: '50%', opacity: 0.1 }}></div>
-                        <div style={{ position: 'relative', zIndex: 10 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                                <span style={{ color: colors.beige, fontWeight: '500', fontSize: '0.85rem' }}>💰 Credit Balance</span>
-                                <div style={{ background: 'rgba(255,255,255,0.15)', padding: '0.5rem', borderRadius: '0.65rem', backdropFilter: 'blur(10px)' }}>
-                                    <DollarSign size={20} />
-                                </div>
-                            </div>
-                            <p style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 'bold', marginBottom: '1rem', color: colors.gold }}>{currency}{user?.credits?.toLocaleString()}</p>
-                            <button style={{ background: colors.gold, color: colors.darkTeal, padding: '0.65rem 1.5rem', borderRadius: '0.75rem', fontWeight: '700', fontSize: '0.9rem', border: 'none', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 8px rgba(0,0,0,0.15)', width: '100%' }}>
-                                Top Up Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style={{ background: `linear-gradient(135deg, ${colors.tan} 0%, ${colors.beige} 100%)`, borderRadius: '1.25rem', padding: '1.5rem', color: colors.darkTeal, boxShadow: '0 10px 25px rgba(212, 165, 116, 0.3)', position: 'relative', overflow: 'hidden', minHeight: '200px' }}>
-                        <div style={{ position: 'absolute', top: '-3rem', right: '-3rem', width: '12rem', height: '12rem', background: colors.darkTeal, borderRadius: '50%', opacity: 0.05 }}></div>
-                        <div style={{ position: 'relative', zIndex: 10 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                                <span style={{ color: colors.darkTeal, fontWeight: '500', fontSize: '0.85rem', opacity: 0.8 }}>📦 Active Services</span>
-                                <div style={{ background: 'rgba(13, 77, 77, 0.1)', padding: '0.5rem', borderRadius: '0.65rem' }}>
-                                    <Briefcase size={20} color={colors.darkTeal} />
-                                </div>
-                            </div>
-                            <p style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 'bold', marginBottom: '1rem' }}>3</p>
-                            <button style={{ background: colors.darkTeal, color: 'white', padding: '0.65rem 1.5rem', borderRadius: '0.75rem', fontWeight: '700', fontSize: '0.9rem', border: 'none', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 8px rgba(0,0,0,0.15)', width: '100%' }}>
-                                Manage All
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style={{ background: `linear-gradient(135deg, ${colors.lightGreen} 0%, ${colors.sage} 100%)`, borderRadius: '1.25rem', padding: '1.5rem', color: 'white', boxShadow: '0 10px 25px rgba(74, 222, 128, 0.3)', position: 'relative', overflow: 'hidden', minHeight: '200px' }}>
-                        <div style={{ position: 'absolute', top: '-3rem', right: '-3rem', width: '12rem', height: '12rem', background: 'white', borderRadius: '50%', opacity: 0.15 }}></div>
-                        <div style={{ position: 'relative', zIndex: 10 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                                <span style={{ color: 'white', fontWeight: '500', fontSize: '0.85rem', opacity: 0.95 }}>📬 New Requests</span>
-                                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '0.65rem' }}>
-                                    <Bell size={20} />
-                                </div>
-                            </div>
-                            <p style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 'bold', marginBottom: '1rem' }}>5</p>
-                            <button style={{ background: 'white', color: colors.sage, padding: '0.65rem 1.5rem', borderRadius: '0.75rem', fontWeight: '700', fontSize: '0.9rem', border: 'none', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 8px rgba(0,0,0,0.15)', width: '100%' }}>
-                                View All
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Quick Actions */}
@@ -408,7 +423,10 @@ const App = () => {
                             </div>
                             <span style={{ fontWeight: '700', color: colors.darkTeal, fontSize: '0.95rem' }}>Browse</span>
                         </button>
-                        <button style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.25rem', background: `linear-gradient(135deg, ${colors.tan}15, ${colors.tan}05)`, borderRadius: '1rem', border: `2px solid ${colors.tan}30`, cursor: 'pointer', transition: 'all 0.3s', justifyContent: 'center' }}>
+                        <button
+                            onClick={() => setCurrentPage('chat')}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.25rem', background: `linear-gradient(135deg, ${colors.tan}15, ${colors.tan}05)`, borderRadius: '1rem', border: `2px solid ${colors.tan}30`, cursor: 'pointer', transition: 'all 0.3s', justifyContent: 'center' }}
+                        >
                             <div style={{ background: colors.tan, padding: '0.75rem', borderRadius: '1rem', boxShadow: '0 4px 8px rgba(212, 165, 116, 0.25)' }}>
                                 <MessageCircle size={20} color="white" />
                             </div>
@@ -651,11 +669,337 @@ const App = () => {
         </div>
     );
 
+    // Chat Page
+    const ChatPage = () => (
+        <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${colors.beige} 0%, #ffffff 100%)` }}>
+            <nav style={{ background: 'white', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)', borderBottom: `3px solid ${colors.gold}` }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{ width: '2.75rem', height: '2.75rem', background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, borderRadius: '0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 8px rgba(26, 127, 127, 0.3)' }}>
+                                <Briefcase color={colors.gold} size={22} />
+                            </div>
+                            <div>
+                                <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: colors.darkTeal, margin: 0, lineHeight: 1 }}>
+                                    StudentHub
+                                </h1>
+                                <p style={{ fontSize: '0.65rem', color: colors.sage, margin: 0, lineHeight: 1 }}>Marketplace</p>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                            <button
+                                onClick={() => setCurrentPage('dashboard')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <Home size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Home</span>
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('services')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <Briefcase size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Services</span>
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('chat')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: colors.teal, fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <MessageCircle size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Messages</span>
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('profile')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <User size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Profile</span>
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <LogOut size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1.5rem 1rem', height: 'calc(100vh - 7rem)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: selectedChat ? '1fr 2fr' : '1fr', gap: '1.5rem', height: '100%' }}>
+                    {/* Chat List */}
+                    <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ padding: '1.5rem', borderBottom: `2px solid ${colors.beige}` }}>
+                            <h2 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '1rem' }}>Messages 💬</h2>
+                            <div style={{ position: 'relative' }}>
+                                <Search style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: colors.sage }} size={18} />
+                                <input
+                                    type="text"
+                                    placeholder="Search messages..."
+                                    style={{ width: '100%', paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ flex: 1, overflowY: 'auto' }}>
+                            {chats.map((chat) => (
+                                <div
+                                    key={chat.id}
+                                    onClick={() => setSelectedChat(chat)}
+                                    style={{
+                                        padding: '1.25rem',
+                                        borderBottom: `1px solid ${colors.beige}`,
+                                        cursor: 'pointer',
+                                        background: selectedChat?.id === chat.id ? `${colors.teal}10` : 'transparent',
+                                        transition: 'all 0.2s'
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                        <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', flexShrink: 0 }}>
+                                            {chat.avatar}
+                                        </div>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                                                <h3 style={{ fontSize: '1rem', fontWeight: '700', color: colors.darkTeal, margin: 0 }}>{chat.name}</h3>
+                                                <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{chat.time}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{chat.lastMessage}</p>
+                                                {chat.unread > 0 && (
+                                                    <span style={{ background: colors.gold, color: colors.darkTeal, fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '9999px', fontWeight: 'bold', minWidth: '1.25rem', textAlign: 'center' }}>
+                            {chat.unread}
+                          </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Chat Window */}
+                    {selectedChat && (
+                        <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ padding: '1.25rem', borderBottom: `2px solid ${colors.beige}`, background: `linear-gradient(135deg, ${colors.teal}10, transparent)` }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
+                                        {selectedChat.avatar}
+                                    </div>
+                                    <div>
+                                        <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: colors.darkTeal, margin: 0 }}>{selectedChat.name}</h3>
+                                        <p style={{ fontSize: '0.8rem', color: colors.sage, margin: 0 }}>Active now</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', background: `${colors.beige}30` }}>
+                                {selectedChat.messages.map((message) => (
+                                    <div key={message.id} style={{ display: 'flex', justifyContent: message.sender === 'me' ? 'flex-end' : 'flex-start' }}>
+                                        <div style={{
+                                            maxWidth: '70%',
+                                            padding: '0.875rem 1.125rem',
+                                            borderRadius: '1rem',
+                                            background: message.sender === 'me' ? `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})` : 'white',
+                                            color: message.sender === 'me' ? 'white' : colors.darkTeal,
+                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.95rem', lineHeight: 1.4 }}>{message.text}</p>
+                                            <span style={{ fontSize: '0.7rem', opacity: 0.8 }}>{message.time}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div style={{ padding: '1.25rem', borderTop: `2px solid ${colors.beige}` }}>
+                                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                    <input
+                                        type="text"
+                                        value={messageText}
+                                        onChange={(e) => setMessageText(e.target.value)}
+                                        placeholder="Type a message..."
+                                        style={{ flex: 1, padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter' && messageText.trim()) {
+                                                setMessageText('');
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        onClick={() => messageText.trim() && setMessageText('')}
+                                        style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, padding: '0.875rem 1.5rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
+    // Profile Page
+    const ProfilePage = () => (
+        <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${colors.beige} 0%, #ffffff 100%)` }}>
+            <nav style={{ background: 'white', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)', borderBottom: `3px solid ${colors.gold}` }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{ width: '2.75rem', height: '2.75rem', background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, borderRadius: '0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 8px rgba(26, 127, 127, 0.3)' }}>
+                                <Briefcase color={colors.gold} size={22} />
+                            </div>
+                            <div>
+                                <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: colors.darkTeal, margin: 0, lineHeight: 1 }}>
+                                    StudentHub
+                                </h1>
+                                <p style={{ fontSize: '0.65rem', color: colors.sage, margin: 0, lineHeight: 1 }}>Marketplace</p>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                            <button
+                                onClick={() => setCurrentPage('dashboard')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <Home size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Home</span>
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('services')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <Briefcase size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Services</span>
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('chat')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#6b7280', position: 'relative', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <MessageCircle size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Messages</span>
+                                <span style={{ position: 'absolute', top: '-0.25rem', right: '0.25rem', background: colors.gold, color: colors.darkTeal, fontSize: '0.65rem', width: '1.1rem', height: '1.1rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>3</span>
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('profile')}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: colors.teal, fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <User size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Profile</span>
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', minWidth: '50px' }}
+                            >
+                                <LogOut size={20} />
+                                <span style={{ fontSize: '0.7rem' }}>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1.5rem 1rem' }}>
+                {/* Profile Header */}
+                <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, padding: '2rem', marginBottom: '1.5rem', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '15rem', height: '15rem', background: `${colors.gold}10`, borderRadius: '50%', transform: 'translate(50%, -50%)' }}></div>
+
+                    <div style={{ position: 'relative', zIndex: 10 }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <div style={{ width: 'clamp(5rem, 15vw, 7rem)', height: 'clamp(5rem, 15vw, 7rem)', borderRadius: '50%', background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 'bold', boxShadow: '0 8px 16px rgba(26, 127, 127, 0.3)' }}>
+                                SU
+                            </div>
+                            <div style={{ flex: '1 1 300px' }}>
+                                <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '0.5rem' }}>{user?.name}</h2>
+                                <p style={{ color: colors.sage, fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', marginBottom: '1rem' }}>📧 student.user@university.ac.ke</p>
+                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: `${colors.lightGreen}20`, borderRadius: '9999px' }}>
+                                        <Star size={18} color={colors.gold} fill={colors.gold} />
+                                        <span style={{ fontWeight: '700', color: colors.darkTeal }}>4.9 Rating</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: `${colors.teal}20`, borderRadius: '9999px' }}>
+                                        <Briefcase size={18} color={colors.teal} />
+                                        <span style={{ fontWeight: '700', color: colors.darkTeal }}>15 Services</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, padding: '0.875rem 2rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '1.5rem' }}>
+                    {/* Account Info */}
+                    <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, padding: '1.5rem' }}>
+                        <h3 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.5rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '1.25rem' }}>Account Information</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: colors.sage, marginBottom: '0.25rem', fontWeight: '600' }}>Student ID</label>
+                                <p style={{ fontSize: '1rem', color: colors.darkTeal, fontWeight: '600', margin: 0 }}>192131</p>
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: colors.sage, marginBottom: '0.25rem', fontWeight: '600' }}>Phone Number</label>
+                                <p style={{ fontSize: '1rem', color: colors.darkTeal, fontWeight: '600', margin: 0 }}>+254 712 345 678</p>
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: colors.sage, marginBottom: '0.25rem', fontWeight: '600' }}>Member Since</label>
+                                <p style={{ fontSize: '1rem', color: colors.darkTeal, fontWeight: '600', margin: 0 }}>January 2025</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Skills & Services */}
+                    <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, padding: '1.5rem' }}>
+                        <h3 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.5rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '1.25rem' }}>Skills & Expertise</h3>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                            {['Tutoring', 'Graphic Design', 'Programming', 'Content Writing', 'Photography'].map((skill, index) => {
+                                const skillColors = [colors.teal, colors.tan, colors.lightGreen, colors.gold, colors.sage];
+                                const skillColor = skillColors[index % skillColors.length];
+                                return (
+                                    <span key={skill} style={{ padding: '0.5rem 1rem', background: `${skillColor}20`, borderRadius: '9999px', color: colors.darkTeal, fontWeight: '600', fontSize: '0.9rem', border: `2px solid ${skillColor}40` }}>
+                    {skill}
+                  </span>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Statistics */}
+                    <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, padding: '1.5rem' }}>
+                        <h3 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.5rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '1.25rem' }}>Statistics</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.875rem', background: `${colors.lightGreen}10`, borderRadius: '0.75rem' }}>
+                                <span style={{ color: colors.darkTeal, fontWeight: '600' }}>Total Earnings</span>
+                                <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: colors.lightGreen }}>{currency}45,000</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.875rem', background: `${colors.teal}10`, borderRadius: '0.75rem' }}>
+                                <span style={{ color: colors.darkTeal, fontWeight: '600' }}>Completed Orders</span>
+                                <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: colors.teal }}>28</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.875rem', background: `${colors.gold}10`, borderRadius: '0.75rem' }}>
+                                <span style={{ color: colors.darkTeal, fontWeight: '600' }}>Response Rate</span>
+                                <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: colors.darkGold }}>98%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div>
             {currentPage === 'login' && <LoginPage />}
             {currentPage === 'dashboard' && user && <Dashboard />}
             {currentPage === 'services' && user && <ServicesPage />}
+            {currentPage === 'chat' && user && <ChatPage />}
+            {currentPage === 'profile' && user && <ProfilePage />}
         </div>
     );
 };
