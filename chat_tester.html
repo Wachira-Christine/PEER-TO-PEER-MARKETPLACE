@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .user-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-panel h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .student1 h2 { border-left: 4px solid #4CAF50; padding-left: 10px; }
+        .student2 h2 { border-left: 4px solid #2196F3; padding-left: 10px; }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .student2 button:not(:disabled) {
+            background: #2196F3;
+        }
+        .student2 button:not(:disabled):hover {
+            background: #0b7dda;
+        }
+        .refresh-btn {
+            background: #666 !important;
+        }
+        .refresh-btn:hover {
+            background: #555 !important;
+        }
+        .messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            background: #fafafa;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background: white;
+        }
+        .message.sent {
+            background: #e3f2fd;
+            margin-left: 20px;
+        }
+        .message.received {
+            background: #f1f8e9;
+            margin-right: 20px;
+        }
+        .message-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .section {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .section h3 {
+            margin-top: 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">🎓 Student Marketplace - Chat Tester</h1>
+
+    <div class="container">
+        <!-- Student 1 Panel -->
+        <div class="user-panel student1">
+            <h2>👨‍🎓 Student 1 (Seller)</h2>
+            <div class="status info" id="status1">Ready to login</div>
+
+            <div class="section">
+                <h3>Step 1: Login</h3>
+                <input type="text" id="username1" placeholder="Username" value="student1">
+                <input type="password" id="password1" placeholder="Password" value="password123">
+                <button onclick="login(1)" id="loginBtn1">Login</button>
+            </div>
+
+            <div class="section">
+                <h3>Step 2: Start Chat</h3>
+                <input type="number" id="otherUserId1" placeholder="Other Student ID" value="">
+                <button onclick="startConversation(1)" id="startBtn1" disabled>Start Conversation</button>
+            </div>
+
+            <div class="section">
+                <h3>Step 3: Send Messages</h3>
+                <div class="messages" id="messages1">
+                    <p style="text-align: center; color: #999;">No messages yet</p>
+                </div>
+                <input type="text" id="messageInput1" placeholder="Type your message..." disabled>
+                <button onclick="sendMessage(1)" id="sendBtn1" disabled>Send Message</button>
+                <button onclick="loadMessages(1)" class="refresh-btn" id="refreshBtn1" disabled>🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Student 2 Panel -->
+        <div class="user-panel student2">
+            <h2>👩‍🎓 Student 2 (Buyer)</h2>
+            <div class="status info" id="status2">Ready to login</div>
+
+            <div class="section">
+                <h3>Step 1: Login</h3>
+                <input type="text" id="username2" placeholder="Username" value="student2">
+                <input type="password" id="password2" placeholder="Password" value="password123">
+                <button onclick="login(2)" id="loginBtn2">Login</button>
+            </div>
+
+            <div class="section">
+                <h3>Step 2: Start Chat</h3>
+                <input type="number" id="otherUserId2" placeholder="Other Student ID" value="">
+                <button onclick="startConversation(2)" id="startBtn2" disabled>Start Conversation</button>
+            </div>
+
+            <div class="section">
+                <h3>Step 3: Send Messages</h3>
+                <div class="messages" id="messages2">
+                    <p style="text-align: center; color: #999;">No messages yet</p>
+                </div>
+                <input type="text" id="messageInput2" placeholder="Type your message..." disabled>
+                <button onclick="sendMessage(2)" id="sendBtn2" disabled>Send Message</button>
+                <button onclick="loadMessages(2)" class="refresh-btn" id="refreshBtn2" disabled>🔄 Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api/chat';
+        let conversationId1 = null;
+        let conversationId2 = null;
+        let currentUserId1 = null;
+        let currentUserId2 = null;
+
+        function updateStatus(panel, message, type = 'info') {
+            const status = document.getElementById(`status${panel}`);
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function enableButtons(panel, enabled) {
+            document.getElementById(`startBtn${panel}`).disabled = !enabled;
+            document.getElementById(`messageInput${panel}`).disabled = !enabled;
+        }
+
+        function enableMessageButtons(panel, enabled) {
+            document.getElementById(`sendBtn${panel}`).disabled = !enabled;
+            document.getElementById(`refreshBtn${panel}`).disabled = !enabled;
+        }
+
+        async function getCsrfToken() {
+            const response = await fetch('http://127.0.0.1:8000/admin/', {
+                credentials: 'include'
+            });
+            const text = await response.text();
+            const match = text.match(/csrfmiddlewaretoken.*value='([^']+)'/);
+            return match ? match[1] : null;
+        }
+
+        async function login(panel) {
+            const username = document.getElementById(`username${panel}`).value;
+            const password = document.getElementById(`password${panel}`).value;
+            const loginBtn = document.getElementById(`loginBtn${panel}`);
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            updateStatus(panel, 'Logging in...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    if (panel === 1) currentUserId1 = data.user_id;
+                    if (panel === 2) currentUserId2 = data.user_id;
+
+                    updateStatus(panel, `✅ Logged in as ${data.username} (ID: ${data.user_id})`, 'success');
+                    loginBtn.textContent = '✓ Logged In';
+                    enableButtons(panel, true);
+
+                    // Auto-fill the other user ID
+                    const otherPanel = panel === 1 ? 2 : 1;
+                    const otherUserId = otherPanel === 1 ? currentUserId1 : currentUserId2;
+                    if (otherUserId) {
+                        document.getElementById(`otherUserId${panel}`).value = otherUserId;
+                    }
+                } else {
+                    updateStatus(panel, `❌ Login failed: ${data.error || 'Unknown error'}`, 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                }
+            } catch (error) {
+                updateStatus(panel, `❌ Error: ${error.message}`, 'error');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+
+        async function startConversation(panel) {
+            const otherUserId = document.getElementById(`otherUserId${panel}`).value;
+            const startBtn = document.getElementById(`startBtn${panel}`);
+
+            if (!otherUserId) {
+                updateStatus(panel, '❌ Please enter the other student ID', 'error');
+                return;
+            }
+
+            startBtn.disabled = true;
+            startBtn.textContent = 'Starting...';
+            updateStatus(panel, 'Starting conversation...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/conversations/get-or-create/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ user_id: parseInt(otherUserId) })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (panel === 1) conversationId1 = data.id;
+                    if (panel === 2) conversationId2 = data.id;
+                    updateStatus(panel, `✅ Conversation ready! (ID: ${data.id})`, 'success');
+                    startBtn.textContent = '✓ Connected';
+                    enableMessageButtons(panel, true);
+                    loadMessages(panel);
+                } else {
+                    updateStatus(panel, `❌ Error: ${JSON.stringify(data)}`, 'error');
+                    startBtn.disabled = false;
+                    startBtn.textContent = 'Start Conversation';
+                }
+            } catch (error) {
+                updateStatus(panel, `❌ Error: ${error.message}`, 'error');
+                startBtn.disabled = false;
+                startBtn.textContent = 'Start Conversation';
+            }
+        }
+
+        async function sendMessage(panel) {
+            const conversationId = panel === 1 ? conversationId1 : conversationId2;
+            const messageInput = document.getElementById(`messageInput${panel}`);
+            const content = messageInput.value.trim();
+
+            if (!conversationId) {
+                updateStatus(panel, '❌ Start a conversation first!', 'error');
+                return;
+            }
+
+            if (!content) {
+                updateStatus(panel, '❌ Message cannot be empty!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/messages/send/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        conversation_id: conversationId,
+                        content: content
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageInput.value = '';
+                    updateStatus(panel, '✅ Message sent!', 'success');
+                    loadMessages(panel);
+                } else {
+                    updateStatus(panel, `❌ Error: ${JSON.stringify(data)}`, 'error');
+                }
+            } catch (error) {
+                updateStatus(panel, `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadMessages(panel) {
+            const conversationId = panel === 1 ? conversationId1 : conversationId2;
+            const currentUserId = panel === 1 ? currentUserId1 : currentUserId2;
+
+            if (!conversationId) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/conversations/${conversationId}/messages/`, {
+                    credentials: 'include'
+                });
+
+                const messages = await response.json();
+
+                if (response.ok) {
+                    displayMessages(panel, messages, currentUserId);
+                } else {
+                    console.error('Error loading messages');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function displayMessages(panel, messages, currentUserId) {
+            const messagesDiv = document.getElementById(`messages${panel}`);
+
+            if (messages.length === 0) {
+                messagesDiv.innerHTML = '<p style="text-align: center; color: #999;">No messages yet. Start the conversation!</p>';
+                return;
+            }
+
+            messagesDiv.innerHTML = '';
+
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                const isSent = msg.sender.id === currentUserId;
+                messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+
+                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <strong>${msg.sender.username}</strong> • ${time}
+                    </div>
+                    <div>${msg.content}</div>
+                `;
+
+                messagesDiv.appendChild(messageDiv);
+            });
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Auto-refresh messages every 3 seconds
+        setInterval(() => {
+            if (conversationId1) loadMessages(1);
+            if (conversationId2) loadMessages(2);
+        }, 3000);
+
+        // Allow Enter key to send message
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('messageInput1').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !this.disabled) {
+                    sendMessage(1);
+                }
+            });
+            document.getElementById('messageInput2').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !this.disabled) {
+                    sendMessage(2);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
