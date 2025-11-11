@@ -1,0 +1,11 @@
+# Ignore Composer dependencies
+/vendor/
+
+# Ignore environment and config files (DB passwords etc.)
+connection.php
+
+# Ignore temporary files
+*.log
+*.env
+*.bak
+*.tmp
