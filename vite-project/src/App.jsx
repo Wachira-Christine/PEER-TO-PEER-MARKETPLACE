@@ -7,6 +7,28 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [selectedChat, setSelectedChat] = useState(null);
     const [messageText, setMessageText] = useState('');
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isPostingService, setIsPostingService] = useState(false);
+    const [selectedSeller, setSelectedSeller] = useState(null);
+    const [userServices, setUserServices] = useState([]);
+
+    // Profile form state
+    const [profileForm, setProfileForm] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        studentId: '',
+        skills: []
+    });
+
+    // Service form state
+    const [serviceForm, setServiceForm] = useState({
+        title: '',
+        description: '',
+        category: 'Tutoring',
+        price: '',
+        availability: ''
+    });
 
     // Currency for Kenya
     const currency = 'KSh';
@@ -82,7 +104,7 @@ const App = () => {
     };
 
     // Mock data for services
-    const services = [
+    const [services, setServices] = useState([
         {
             id: 1,
             title: "Professional Tutoring - Mathematics",
@@ -92,7 +114,8 @@ const App = () => {
             rating: 4.8,
             reviews: 24,
             description: "Expert help in Calculus, Algebra, and Statistics",
-            availability: "Mon-Fri, 6pm-9pm"
+            availability: "Mon-Fri, 6pm-9pm",
+            providerId: 2
         },
         {
             id: 2,
@@ -103,7 +126,8 @@ const App = () => {
             rating: 4.9,
             reviews: 31,
             description: "Logo design, posters, social media graphics",
-            availability: "Flexible schedule"
+            availability: "Flexible schedule",
+            providerId: 3
         },
         {
             id: 3,
@@ -114,7 +138,8 @@ const App = () => {
             rating: 4.7,
             reviews: 18,
             description: "Comprehensive notes with examples and diagrams",
-            availability: "Instant delivery"
+            availability: "Instant delivery",
+            providerId: 4
         },
         {
             id: 4,
@@ -125,7 +150,8 @@ const App = () => {
             rating: 5.0,
             reviews: 42,
             description: "Professional editing for academic papers",
-            availability: "24-48 hour turnaround"
+            availability: "24-48 hour turnaround",
+            providerId: 5
         },
         {
             id: 5,
@@ -136,7 +162,8 @@ const App = () => {
             rating: 4.6,
             reviews: 15,
             description: "Debug code, explain concepts, project help",
-            availability: "Weekends available"
+            availability: "Weekends available",
+            providerId: 6
         },
         {
             id: 6,
@@ -147,18 +174,77 @@ const App = () => {
             rating: 4.9,
             reviews: 27,
             description: "Event photography, portraits, editing",
-            availability: "By appointment"
+            availability: "By appointment",
+            providerId: 7
         }
-    ];
+    ]);
 
     const handleLogin = () => {
-        setUser({ name: "Student User", credits: 15000 }); // Changed to KES (approx 150 USD = 15000 KES)
+        const userData = {
+            name: "Student User",
+            email: "student.user@university.ac.ke",
+            phone: "+254 712 345 678",
+            studentId: "192131",
+            credits: 15000,
+            skills: ['Tutoring', 'Graphic Design', 'Programming', 'Content Writing', 'Photography']
+        };
+        setUser(userData);
+        setProfileForm(userData);
         setCurrentPage('dashboard');
     };
 
     const handleLogout = () => {
         setUser(null);
         setCurrentPage('login');
+    };
+
+    const handlePostService = () => {
+        if (serviceForm.title && serviceForm.description && serviceForm.price && serviceForm.availability) {
+            const newService = {
+                id: services.length + 1,
+                title: serviceForm.title,
+                provider: user.name,
+                category: serviceForm.category,
+                price: parseInt(serviceForm.price),
+                rating: 5.0,
+                reviews: 0,
+                description: serviceForm.description,
+                availability: serviceForm.availability,
+                providerId: 1
+            };
+            setServices([newService, ...services]);
+            setUserServices([...userServices, newService]);
+            setServiceForm({
+                title: '',
+                description: '',
+                category: 'Tutoring',
+                price: '',
+                availability: ''
+            });
+            setIsPostingService(false);
+            alert('Service posted successfully! 🎉');
+        } else {
+            alert('Please fill in all fields');
+        }
+    };
+
+    const handleSaveProfile = () => {
+        setUser({ ...user, ...profileForm });
+        setIsEditingProfile(false);
+        alert('Profile updated successfully! ✅');
+    };
+
+    const viewSellerProfile = (service) => {
+        setSelectedSeller({
+            name: service.provider,
+            email: `${service.provider.toLowerCase().replace(' ', '.')}@university.ac.ke`,
+            phone: "+254 700 000 000",
+            studentId: service.providerId,
+            rating: service.rating,
+            reviews: service.reviews,
+            services: services.filter(s => s.provider === service.provider)
+        });
+        setCurrentPage('sellerProfile');
     };
 
     // Login/Registration Page
@@ -408,7 +494,10 @@ const App = () => {
                         Quick Actions
                     </h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
-                        <button style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.25rem', background: `linear-gradient(135deg, ${colors.teal}15, ${colors.teal}05)`, borderRadius: '1rem', border: `2px solid ${colors.teal}30`, cursor: 'pointer', transition: 'all 0.3s', justifyContent: 'center' }}>
+                        <button
+                            onClick={() => setIsPostingService(true)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.25rem', background: `linear-gradient(135deg, ${colors.teal}15, ${colors.teal}05)`, borderRadius: '1rem', border: `2px solid ${colors.teal}30`, cursor: 'pointer', transition: 'all 0.3s', justifyContent: 'center' }}
+                        >
                             <div style={{ background: colors.teal, padding: '0.75rem', borderRadius: '1rem', boxShadow: '0 4px 8px rgba(26, 127, 127, 0.25)' }}>
                                 <Briefcase size={20} color="white" />
                             </div>
@@ -649,8 +738,11 @@ const App = () => {
                                             <Tag color={colors.sage} size={22} />
                                             <span style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 'bold', color: colors.darkTeal }}>{currency}{service.price.toLocaleString()}</span>
                                         </div>
-                                        <button style={{ background: cardColor.buttonBg, color: cardColor.buttonBg === colors.gold ? colors.darkTeal : 'white', padding: '0.75rem 1.5rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 8px rgba(0,0,0,0.15)', minWidth: '120px' }}>
-                                            Contact
+                                        <button
+                                            onClick={() => viewSellerProfile(service)}
+                                            style={{ background: cardColor.buttonBg, color: cardColor.buttonBg === colors.gold ? colors.darkTeal : 'white', padding: '0.75rem 1.5rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 8px rgba(0,0,0,0.15)', minWidth: '120px' }}
+                                        >
+                                            View Profile
                                         </button>
                                     </div>
                                 </div>
@@ -928,7 +1020,10 @@ const App = () => {
                                 </div>
                             </div>
                         </div>
-                        <button style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, padding: '0.875rem 2rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>
+                        <button
+                            onClick={() => setIsEditingProfile(true)}
+                            style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, padding: '0.875rem 2rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}
+                        >
                             Edit Profile
                         </button>
                     </div>
@@ -993,6 +1088,228 @@ const App = () => {
         </div>
     );
 
+    // Post Service Modal
+    const PostServiceModal = () => (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+            <div style={{ background: 'white', borderRadius: '1.5rem', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
+                <div style={{ background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, padding: '1.5rem', color: 'white', borderTopLeftRadius: '1.5rem', borderTopRightRadius: '1.5rem' }}>
+                    <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 'bold', margin: 0 }}>Post a New Service 🚀</h2>
+                </div>
+
+                <div style={{ padding: '2rem' }}>
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Service Title</label>
+                        <input
+                            type="text"
+                            value={serviceForm.title}
+                            onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })}
+                            placeholder="e.g., Professional Math Tutoring"
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Category</label>
+                        <select
+                            value={serviceForm.category}
+                            onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })}
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box', background: 'white' }}
+                        >
+                            <option>Tutoring</option>
+                            <option>Design</option>
+                            <option>Notes</option>
+                            <option>Writing</option>
+                            <option>Photography</option>
+                            <option>Programming</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Description</label>
+                        <textarea
+                            value={serviceForm.description}
+                            onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
+                            placeholder="Describe your service in detail..."
+                            rows="4"
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box', fontFamily: 'inherit', resize: 'vertical' }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Price ({currency})</label>
+                        <input
+                            type="number"
+                            value={serviceForm.price}
+                            onChange={(e) => setServiceForm({ ...serviceForm, price: e.target.value })}
+                            placeholder="e.g., 1500"
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Availability</label>
+                        <input
+                            type="text"
+                            value={serviceForm.availability}
+                            onChange={(e) => setServiceForm({ ...serviceForm, availability: e.target.value })}
+                            placeholder="e.g., Mon-Fri, 6pm-9pm"
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button
+                            onClick={() => setIsPostingService(false)}
+                            style={{ flex: 1, padding: '1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', fontWeight: '700', background: 'white', color: colors.darkTeal, cursor: 'pointer', fontSize: '1rem' }}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handlePostService}
+                            style={{ flex: 1, padding: '1rem', background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)' }}
+                        >
+                            Post Service
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    // Edit Profile Modal
+    const EditProfileModal = () => (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+            <div style={{ background: 'white', borderRadius: '1.5rem', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
+                <div style={{ background: `linear-gradient(135deg, ${colors.teal}, ${colors.darkTeal})`, padding: '1.5rem', color: 'white', borderTopLeftRadius: '1.5rem', borderTopRightRadius: '1.5rem' }}>
+                    <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 'bold', margin: 0 }}>Edit Profile ✏️</h2>
+                </div>
+
+                <div style={{ padding: '2rem' }}>
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Full Name</label>
+                        <input
+                            type="text"
+                            value={profileForm.name}
+                            onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Email</label>
+                        <input
+                            type="email"
+                            value={profileForm.email}
+                            onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Phone Number</label>
+                        <input
+                            type="tel"
+                            value={profileForm.phone}
+                            onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <label style={{ display: 'block', color: colors.darkTeal, fontWeight: '600', marginBottom: '0.5rem' }}>Student ID</label>
+                        <input
+                            type="text"
+                            value={profileForm.studentId}
+                            onChange={(e) => setProfileForm({ ...profileForm, studentId: e.target.value })}
+                            style={{ width: '100%', padding: '0.875rem 1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', outline: 'none', fontSize: '1rem', boxSizing: 'border-box' }}
+                        />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button
+                            onClick={() => setIsEditingProfile(false)}
+                            style={{ flex: 1, padding: '1rem', border: `2px solid ${colors.beige}`, borderRadius: '1rem', fontWeight: '700', background: 'white', color: colors.darkTeal, cursor: 'pointer', fontSize: '1rem' }}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleSaveProfile}
+                            style={{ flex: 1, padding: '1rem', background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)' }}
+                        >
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    // Seller Profile Page
+    const SellerProfilePage = () => (
+        <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${colors.beige} 0%, #ffffff 100%)` }}>
+            <nav style={{ background: 'white', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)', borderBottom: `3px solid ${colors.gold}` }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <button
+                            onClick={() => setCurrentPage('services')}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: colors.teal, fontWeight: '600', fontSize: '1rem' }}
+                        >
+                            ← Back to Services
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1.5rem 1rem' }}>
+                {/* Seller Profile Header */}
+                <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, padding: '2rem', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <div style={{ width: 'clamp(5rem, 15vw, 7rem)', height: 'clamp(5rem, 15vw, 7rem)', borderRadius: '50%', background: `linear-gradient(135deg, ${colors.tan}, ${colors.beige})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.darkTeal, fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 'bold', boxShadow: '0 8px 16px rgba(212, 165, 116, 0.3)' }}>
+                            {selectedSeller?.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div style={{ flex: '1 1 300px' }}>
+                            <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '0.5rem' }}>{selectedSeller?.name}</h2>
+                            <p style={{ color: colors.sage, fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', marginBottom: '1rem' }}>📧 {selectedSeller?.email}</p>
+                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: `${colors.gold}20`, borderRadius: '9999px' }}>
+                                    <Star size={18} color={colors.gold} fill={colors.gold} />
+                                    <span style={{ fontWeight: '700', color: colors.darkTeal }}>{selectedSeller?.rating} Rating</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: `${colors.teal}20`, borderRadius: '9999px' }}>
+                                    <span style={{ fontWeight: '700', color: colors.darkTeal }}>{selectedSeller?.reviews} Reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setCurrentPage('chat')}
+                        style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.darkGold})`, color: colors.darkTeal, padding: '0.875rem 2rem', borderRadius: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer', boxShadow: '0 4px 8px rgba(251, 191, 36, 0.25)', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}
+                    >
+                        Send Message
+                    </button>
+                </div>
+
+                {/* Seller's Services */}
+                <div style={{ background: 'white', borderRadius: '1.25rem', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', border: `2px solid ${colors.beige}`, padding: '2rem' }}>
+                    <h3 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '1.5rem' }}>Services by {selectedSeller?.name}</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '1.5rem' }}>
+                        {selectedSeller?.services.map((service, index) => (
+                            <div key={service.id} style={{ background: `${colors.beige}50`, borderRadius: '1rem', padding: '1.5rem', border: `2px solid ${colors.beige}` }}>
+                                <h4 style={{ fontSize: '1.15rem', fontWeight: 'bold', color: colors.darkTeal, marginBottom: '0.75rem' }}>{service.title}</h4>
+                                <p style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '1rem' }}>{service.description}</p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: colors.teal }}>{currency}{service.price.toLocaleString()}</span>
+                                    <span style={{ fontSize: '0.85rem', color: colors.sage }}>{service.category}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div>
             {currentPage === 'login' && <LoginPage />}
@@ -1000,6 +1317,9 @@ const App = () => {
             {currentPage === 'services' && user && <ServicesPage />}
             {currentPage === 'chat' && user && <ChatPage />}
             {currentPage === 'profile' && user && <ProfilePage />}
+            {currentPage === 'sellerProfile' && user && selectedSeller && <SellerProfilePage />}
+            {isPostingService && <PostServiceModal />}
+            {isEditingProfile && <EditProfileModal />}
         </div>
     );
 };
