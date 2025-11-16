@@ -29,7 +29,7 @@ This guide explains how to run the Student peer-to-peer service marketplace usin
 Frontend:Vite(Javascript)
 Backend:Django(Python)
 
-Mkae sure you have the following:
+Make sure you have the following:
 Git
 Node.js&npm
 Django installed
