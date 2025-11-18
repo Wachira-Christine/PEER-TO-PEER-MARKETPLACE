@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudentHub - Campus Marketplace</title>
+    <!-- Main CSS files -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
+    <!-- Landing page wrapper -->
     <div class="landing-page">
+
+        <!-- Navigation bar -->
         <div class="landing-nav">
             <div class="logo">
                 <span class="logo-icon">🎒</span>
@@ -20,6 +24,7 @@
             </div>
         </div>
 
+        <!-- Hero section -->
         <div class="landing-hero">
             <h1>Your Campus Marketplace</h1>
             <p>Connect, Trade, and Grow with Fellow Students</p>
@@ -29,20 +34,24 @@
             </div>
         </div>
 
+        <!-- Features section -->
         <div class="landing-features">
             <div class="features-container">
                 <h2>Why StudentHub?</h2>
                 <div class="features-grid">
+                    <!-- Feature card: Offer Services -->
                     <div class="feature-card">
                         <div class="feature-icon">💼</div>
                         <h3>Offer Services</h3>
                         <p>Share your skills and earn money by offering tutoring, design, tech help, and more</p>
                     </div>
+                    <!-- Feature card: Find Help -->
                     <div class="feature-card">
                         <div class="feature-icon">🔍</div>
                         <h3>Find Help</h3>
                         <p>Browse services from talented students in your community</p>
                     </div>
+                    <!-- Feature card: Direct Messaging -->
                     <div class="feature-card">
                         <div class="feature-icon">💬</div>
                         <h3>Direct Messaging</h3>
@@ -52,60 +61,16 @@
             </div>
         </div>
 
+        <!-- Services preview section -->
         <div class="landing-services" id="services-section">
             <div class="container">
                 <h2>Browse Services</h2>
                 <div id="services-preview" class="services-grid">
-                    <!-- Services will be loaded by JavaScript -->
+                    <!-- Services will be dynamically loaded by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="js/utils.js"></script>
-    <script src="js/services.js"></script>
-    <script>
-        // Load services preview on landing page
-        async function loadServicesPreview() {
-            try {
-                const services = await apiCall('/services');
-                const previewContainer = document.getElementById('services-preview');
-
-                if (services.length === 0) {
-                    previewContainer.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📦</div>
-                            <h3>No services yet</h3>
-                            <p>Be the first to post a service!</p>
-                        </div>
-                    `;
-                } else {
-                    previewContainer.innerHTML = services.slice(0, 3).map(service => `
-                        <div class="service-card" onclick="window.location.href='login.html'">
-                            <div class="service-header">
-                                <span class="service-icon">⚡</span>
-                                <span class="service-category">${service.category}</span>
-                            </div>
-                            <div class="service-body">
-                                <h3 class="service-title">${service.title}</h3>
-                                <p class="service-description">${service.description.substring(0, 100)}...</p>
-                                <div class="service-seller">
-                                    👤 ${service.seller_name}
-                                </div>
-                                <div class="service-footer">
-                                    <div class="service-price">KSh${service.price}</div>
-                                    <button class="btn-contact" onclick="event.stopPropagation(); window.location.href='login.html'">Login to View</button>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Error loading services preview:', error);
-            }
-        }
-
-        loadServicesPreview();
-    </script>
-</body>
-</html>
+    <!-- JavaScript files -->
+    <script src="js/utils.js"></scri

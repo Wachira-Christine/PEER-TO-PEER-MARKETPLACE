@@ -1,14 +1,18 @@
-// Service-related functions
+
+// Service-Related Functions
+
+// Load all available services
 async function loadServices() {
     try {
-        state.services = await apiCall('/services');
+        state.services = await apiCall('/services'); // Fetch services from API
         return state.services;
     } catch (error) {
         console.error('Error loading services:', error);
-        return [];
+        return []; // Return empty array on error
     }
 }
 
+// Load services created by the current user
 async function loadMyServices() {
     if (!currentUser) return [];
     try {
@@ -20,6 +24,7 @@ async function loadMyServices() {
     }
 }
 
+// Load services requested by the current user
 async function loadRequestedServices() {
     if (!currentUser) return [];
     try {
@@ -31,10 +36,12 @@ async function loadRequestedServices() {
     }
 }
 
+// Load incoming service requests for the user's services
 async function loadServiceRequests() {
     if (!currentUser) return [];
     try {
         state.serviceRequests = await apiCall('/service-requests');
+        // Count new pending requests
         state.newRequestsCount = state.serviceRequests.filter(r => r.status === 'pending').length;
         return state.serviceRequests;
     } catch (error) {
@@ -43,6 +50,7 @@ async function loadServiceRequests() {
     }
 }
 
+// Load total earnings for the current user
 async function loadUserEarnings() {
     if (!currentUser) return 0;
     try {
@@ -56,6 +64,7 @@ async function loadUserEarnings() {
     }
 }
 
+// Request a specific service by ID
 async function requestService(serviceId) {
     try {
         await apiCall('/request-service', {
@@ -70,6 +79,7 @@ async function requestService(serviceId) {
     }
 }
 
+// Load details of a specific service
 async function loadServiceDetail(serviceId) {
     try {
         currentService = await apiCall(`/services/${serviceId}`);
@@ -80,6 +90,7 @@ async function loadServiceDetail(serviceId) {
     }
 }
 
+// Create a new service
 async function createService(title, description, price, category) {
     try {
         await apiCall('/services', {
@@ -94,6 +105,7 @@ async function createService(title, description, price, category) {
     }
 }
 
+// Delete a service by ID
 async function deleteService(serviceId) {
     if (confirm('Are you sure you want to delete this service?')) {
         try {
@@ -108,6 +120,7 @@ async function deleteService(serviceId) {
     return false;
 }
 
+// Mark a service request as complete
 async function markServiceComplete(requestId) {
     try {
         await apiCall('/complete-service', {

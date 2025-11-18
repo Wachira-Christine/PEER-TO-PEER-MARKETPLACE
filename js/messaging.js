@@ -1,22 +1,26 @@
-// Messaging functions
+
+// Messaging Functions
+
+// Loads all conversations for the current user
 async function loadConversations() {
-    if (!currentUser) return [];
+    if (!currentUser) return []; // Exit if no user is logged in
     try {
-        state.conversations = await apiCall('/conversations');
+        state.conversations = await apiCall('/conversations'); // Fetch conversations from API
         return state.conversations;
     } catch (error) {
         console.error('Error loading conversations:', error);
-        return [];
+        return []; // Return empty array on error
     }
 }
 
+// Loads all messages for a specific conversation/user
 async function loadMessages(userId) {
-    if (!userId || !currentUser) return;
+    if (!userId || !currentUser) return; // Exit if invalid user or not logged in
     try {
-        state.messages = await apiCall(`/messages?user_id=${userId}`);
-        currentChatUser = userId;
+        state.messages = await apiCall(`/messages?user_id=${userId}`); // Fetch messages
+        currentChatUser = userId; // Set current chat user
 
-        // Re-render messages if the function exists
+        // Re-render messages if a render function exists
         if (typeof renderMessages === 'function') {
             renderMessages();
         }
@@ -24,10 +28,11 @@ async function loadMessages(userId) {
         return state.messages;
     } catch (error) {
         console.error('Error loading messages:', error);
-        return [];
+        return []; // Return empty array on error
     }
 }
 
+// Sends a message to a specific user
 async function sendMessage(receiverId, message) {
     try {
         await apiCall('/messages', {
@@ -35,10 +40,10 @@ async function sendMessage(receiverId, message) {
             body: JSON.stringify({ receiver_id: receiverId, message })
         });
 
-        // Reload messages to show the new one
+        // Refresh messages to display the new message
         await loadMessages(receiverId);
 
-        // Reload conversations to update last message
+        // Refresh conversations to update the last message preview
         await loadConversations();
         if (typeof renderConversations === 'function') {
             renderConversations();
@@ -46,7 +51,7 @@ async function sendMessage(receiverId, message) {
 
         return true;
     } catch (error) {
-        alert(error.message);
+        alert(error.message); // Show error to user
         return false;
     }
 }
