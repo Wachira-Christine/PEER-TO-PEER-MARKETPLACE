@@ -9,6 +9,7 @@ from routes.services import services_bp
 from routes.messages import messages_bp
 from routes.requests import requests_bp
 
+#create app function
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
