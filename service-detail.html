@@ -39,7 +39,8 @@
             // Get service ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             const serviceId = urlParams.get('id');
-
+            
+            // check serviceId
             if (!serviceId) {
                 window.location.href = 'home.html';
                 return;
