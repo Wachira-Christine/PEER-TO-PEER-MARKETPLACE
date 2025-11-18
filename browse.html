@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Services - StudentHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/browse.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span class="logo-icon">🎒</span>
+                <span>StudentHub</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn secondary" onclick="window.location.href='home.html'">← Back</button>
+                <button class="nav-btn primary" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h1 class="welcome-text">Browse Services 🔍</h1>
+            <p style="color: var(--text-gray); font-size: 16px; margin-bottom: 30px;">
+                Discover services from fellow students
+            </p>
+
+            <div class="search-container">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search services, sellers, or descriptions..."
+                    id="search-input"
+                >
+                <select class="filter-select" id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="Tutoring">Tutoring</option>
+                    <option value="Design">Design</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Notes">Notes</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div id="services-container" class="services-grid">
+                <!-- Services will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/services.js"></script>
+    <script>
+        async function initBrowse() {
+            // Check authentication
+            if (!await requireAuth()) return;
+
+            // Load services
+            await loadServices();
+            renderServices();
+
+            // Set up search and filter event listeners
+            document.getElementById('search-input').addEventListener('input', function() {
+                state.searchQuery = this.value;
+                renderServices();
+            });
+
+            document.getElementById('category-filter').addEventListener('change', function() {
+                state.selectedCategory = this.value;
+                renderServices();
+            });
+        }
+
+        function renderServices() {
+            const container = document.getElementById('services-container');
+            const filteredServices = filterServices();
+
+            if (filteredServices.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>No services found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = filteredServices.map(service => {
+                    const isOwnService = service.seller_id === currentUser.id;
+                    return `
+                        <div class="service-card" onclick="viewService(${service.id})">
+                            <div class="service-header">
+                                <span class="service-icon">⚡</span>
+                                <span class="service-category">${service.category}</span>
+                            </div>
+                            <div class="service-body">
+                                <h3 class="service-title">${service.title}</h3>
+                                <p class="service-description">${service.description.substring(0, 100)}...</p>
+                                <div class="service-seller">
+                                    👤 ${service.seller_name}
+                                    ${service.rating ? `⭐ ${service.rating}/5` : '⭐ New'}
+                                </div>
+                                <div class="service-footer">
+                                    <div class="service-price">KSh${service.price}</div>
+                                    ${!isOwnService ? `
+                                        <button class="btn-contact" onclick="event.stopPropagation(); viewService(${service.id})">View Details</button>
+                                    ` : `
+                                        <button class="btn-contact" style="background: var(--text-gray);" onclick="event.stopPropagation();">Your Service</button>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        async function viewService(serviceId) {
+            window.location.href = `service-detail.html?id=${serviceId}`;
+        }
+
+        // Initialize browse page when page loads
+        document.addEventListener('DOMContentLoaded', initBrowse);
+    </script>
+</body>
+</html>

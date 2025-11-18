@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub - Campus Marketplace</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+    <div class="landing-page">
+        <div class="landing-nav">
+            <div class="logo">
+                <span class="logo-icon">🎒</span>
+                Student Peer-to-Peer Marketing
+            </div>
+            <div class="landing-nav-buttons">
+                <button class="nav-login" onclick="window.location.href='login.html'">Login</button>
+                <button class="nav-signup" onclick="window.location.href='signup.html'">Sign Up</button>
+            </div>
+        </div>
+
+        <div class="landing-hero">
+            <h1>Your Campus Marketplace</h1>
+            <p>Connect, Trade, and Grow with Fellow Students</p>
+            <div class="landing-cta">
+                <button class="cta-primary" onclick="window.location.href='signup.html'">Get Started</button>
+                <button class="cta-secondary" onclick="document.getElementById('services-section').scrollIntoView({behavior: 'smooth'})">Browse Services</button>
+            </div>
+        </div>
+
+        <div class="landing-features">
+            <div class="features-container">
+                <h2>Why StudentHub?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">💼</div>
+                        <h3>Offer Services</h3>
+                        <p>Share your skills and earn money by offering tutoring, design, tech help, and more</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Find Help</h3>
+                        <p>Browse services from talented students in your community</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Direct Messaging</h3>
+                        <p>Chat directly with sellers to discuss details and arrange payment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="landing-services" id="services-section">
+            <div class="container">
+                <h2>Browse Services</h2>
+                <div id="services-preview" class="services-grid">
+                    <!-- Services will be loaded by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/services.js"></script>
+    <script>
+        // Load services preview on landing page
+        async function loadServicesPreview() {
+            try {
+                const services = await apiCall('/services');
+                const previewContainer = document.getElementById('services-preview');
+
+                if (services.length === 0) {
+                    previewContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📦</div>
+                            <h3>No services yet</h3>
+                            <p>Be the first to post a service!</p>
+                        </div>
+                    `;
+                } else {
+                    previewContainer.innerHTML = services.slice(0, 3).map(service => `
+                        <div class="service-card" onclick="window.location.href='login.html'">
+                            <div class="service-header">
+                                <span class="service-icon">⚡</span>
+                                <span class="service-category">${service.category}</span>
+                            </div>
+                            <div class="service-body">
+                                <h3 class="service-title">${service.title}</h3>
+                                <p class="service-description">${service.description.substring(0, 100)}...</p>
+                                <div class="service-seller">
+                                    👤 ${service.seller_name}
+                                </div>
+                                <div class="service-footer">
+                                    <div class="service-price">KSh${service.price}</div>
+                                    <button class="btn-contact" onclick="event.stopPropagation(); window.location.href='login.html'">Login to View</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading services preview:', error);
+            }
+        }
+
+        loadServicesPreview();
+    </script>
+</body>
+</html>

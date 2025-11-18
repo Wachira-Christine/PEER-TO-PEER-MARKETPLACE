@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - StudentHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/messages.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span class="logo-icon">🎒</span>
+                <span>StudentHub</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn secondary" onclick="window.location.href='home.html'">← Back</button>
+                <button class="nav-btn primary" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <div style="padding: 24px; border-bottom: 2px solid var(--bg-cream);">
+                        <h3 style="font-size: 20px; font-weight: 700;">Messages</h3>
+                    </div>
+                    <div id="conversations-list">
+                        <!-- Conversations will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="chat-main">
+                    <div id="chat-header" style="padding: 24px; border-bottom: 2px solid var(--bg-cream); background: var(--bg-cream);">
+                        <h3 id="chat-user-name" style="font-size: 18px; font-weight: 700;">Select a conversation</h3>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💬</div>
+                            <h3>Select a conversation</h3>
+                        </div>
+                    </div>
+
+                    <div class="chat-input" id="chat-input" style="display: none;">
+                        <input type="text" id="messageInput" placeholder="Type a message...">
+                        <button onclick="sendMessageHandler()" class="btn-contact">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/messaging.js"></script>
+    <script>
+        async function initMessages() {
+            // Check authentication
+            if (!await requireAuth()) return;
+
+            // Load conversations
+            await loadConversations();
+            renderConversations();
+
+            // Check if a specific user is selected from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user');
+            if (userId) {
+                await loadMessages(parseInt(userId));
+            }
+
+            setupEventListeners();
+        }
+
+        function renderConversations() {
+            const container = document.getElementById('conversations-list');
+
+            if (state.conversations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <p style="font-size: 14px;">No conversations</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = state.conversations.map(conv => `
+                    <div class="chat-conversation ${conv.user_id === currentChatUser ? 'active' : ''}" onclick="selectConversation(${conv.user_id})">
+                        <h4 style="font-weight: 700; margin-bottom: 4px;">${conv.user_name || 'User'}</h4>
+                        <p style="color: var(--text-gray); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${conv.last_message || 'Start chatting'}
+                        </p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function selectConversation(userId) {
+            await loadMessages(userId);
+            renderConversations(); // Re-render to update active state
+        }
+
+        function renderMessages() {
+            const messagesContainer = document.getElementById('chat-messages');
+            const chatHeader = document.getElementById('chat-header');
+            const chatInput = document.getElementById('chat-input');
+
+            if (!currentChatUser) {
+                messagesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <h3>Select a conversation</h3>
+                    </div>
+                `;
+                chatInput.style.display = 'none';
+                return;
+            }
+
+            const currentChat = state.conversations.find(c => c.user_id === currentChatUser);
+            document.getElementById('chat-user-name').textContent = currentChat ? currentChat.user_name : 'User';
+            chatInput.style.display = 'flex';
+
+            if (state.messages.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>No messages yet. Start the conversation!</p>
+                    </div>
+                `;
+            } else {
+                messagesContainer.innerHTML = state.messages.map(msg => {
+                    const isSent = msg.sender_id === currentUser.id;
+                    return `
+                        <div class="message ${isSent ? 'sent' : 'received'}" style="margin-bottom: 16px; ${isSent ? 'text-align: right;' : ''}">
+                            ${!isSent ? `<div style="font-size: 12px; color: var(--primary); margin-bottom: 4px; font-weight: 600;">${msg.sender_name || 'User'}</div>` : ''}
+                            <div class="message-bubble">
+                                ${msg.message}
+                            </div>
+                            <div style="font-size: 11px; color: var(--text-gray); margin-top: 4px;">
+                                ${new Date(msg.created_at).toLocaleTimeString()}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        function setupEventListeners() {
+            // Send message on Enter key
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessageHandler();
+                }
+            });
+        }
+
+        async function sendMessageHandler() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message || !currentChatUser) return;
+
+            const success = await sendMessage(currentChatUser, message);
+            if (success) {
+                input.value = '';
+                // Messages will be reloaded automatically by the messaging.js function
+            }
+        }
+
+        // Initialize messages when page loads
+        document.addEventListener('DOMContentLoaded', initMessages);
+    </script>
+</body>
+</html>

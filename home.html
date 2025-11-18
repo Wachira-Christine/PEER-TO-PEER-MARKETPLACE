@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - StudentHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span class="logo-icon">🎒</span>
+                <span>StudentHub</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn secondary" onclick="window.location.href='home.html'">🏠 Home</button>
+                <button class="nav-btn secondary" onclick="window.location.href='browse.html'">🔍 Browse</button>
+                <button class="nav-btn secondary" id="services-btn" style="position: relative;">
+                    📊 Services
+                    <span class="badge" id="requests-badge" style="display: none;"></span>
+                </button>
+                <button class="nav-btn secondary" onclick="window.location.href='user-profile.html'">👤 Profile</button>
+                <button class="nav-btn secondary" onclick="window.location.href='messages.html'">💬 Messages</button>
+                <button class="nav-btn primary" onclick="logout()">🚪 Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="welcome-text" id="welcome-text">Welcome back! 🎉</h1>
+                <p style="color: var(--text-gray); font-size: 16px;">Your marketplace dashboard</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card teal" onclick="window.location.href='profile.html?tab=posted'">
+                    <div class="stat-label">💰 My Posted Services</div>
+                    <div class="stat-value" id="posted-count">0</div>
+                </div>
+
+                <div class="stat-card beige" onclick="window.location.href='profile.html?tab=requested'">
+                    <div class="stat-label">📋 Services Requested</div>
+                    <div class="stat-value" id="requested-count">0</div>
+                </div>
+
+                <div class="stat-card green" onclick="window.location.href='profile.html?tab=requests'">
+                    <div class="stat-label">🔔 New Requests</div>
+                    <div class="stat-value" id="requests-count">0</div>
+                </div>
+            </div>
+
+            <h2 style="margin: 40px 0 24px; font-size: 28px; font-weight: 800;">Browse Services</h2>
+
+            <div id="services-container" class="services-grid">
+                <!-- Services will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/services.js"></script>
+    <script>
+        // Initialize dashboard
+        async function initDashboard() {
+            // Check authentication
+            if (!await requireAuth()) return;
+
+            // Update welcome message
+            document.getElementById('welcome-text').textContent = `Welcome back, ${currentUser.name}! 🎉`;
+
+            // Load all data
+            await Promise.all([
+                loadMyServices(),
+                loadRequestedServices(),
+                loadServiceRequests(),
+                loadServices()
+            ]);
+
+            // Update stats
+            document.getElementById('posted-count').textContent = state.myServices.length;
+            document.getElementById('requested-count').textContent = state.requestedServices.length;
+            document.getElementById('requests-count').textContent = state.newRequestsCount;
+
+            // Update services button badge
+            const badge = document.getElementById('requests-badge');
+            if (state.newRequestsCount > 0) {
+                badge.textContent = state.newRequestsCount;
+                badge.style.display = 'flex';
+            }
+
+            // Load services preview
+            renderServicesPreview();
+        }
+
+        function renderServicesPreview() {
+            const container = document.getElementById('services-container');
+
+            if (state.services.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <h3>No services available</h3>
+                        <p>Be the first to post a service!</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = state.services.slice(0, 6).map(service => `
+                    <div class="service-card" onclick="viewService(${service.id})">
+                        <div class="service-header">
+                            <span class="service-icon">⚡</span>
+                            <span class="service-category">${service.category}</span>
+                        </div>
+                        <div class="service-body">
+                            <h3 class="service-title">${service.title}</h3>
+                            <p class="service-description">${service.description.substring(0, 100)}...</p>
+                            <div class="service-seller">
+                                👤 ${service.seller_name}
+                            </div>
+                            <div class="service-footer">
+                                <div class="service-price">KSh${service.price}</div>
+                                <button class="btn-contact" onclick="event.stopPropagation(); viewService(${service.id})">View</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function viewService(serviceId) {
+            window.location.href = `service-detail.html?id=${serviceId}`;
+        }
+
+        // Set up services button click
+        document.getElementById('services-btn').addEventListener('click', async function() {
+            await loadMyServices();
+            await loadRequestedServices();
+            await loadServiceRequests();
+            window.location.href = 'profile.html';
+        });
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

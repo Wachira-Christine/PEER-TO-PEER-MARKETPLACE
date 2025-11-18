@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - StudentHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span class="logo-icon">🎒</span>
+                <span>StudentHub</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn secondary" onclick="window.location.href='home.html'">← Back</button>
+                <button class="nav-btn primary" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div style="max-width: 1000px; margin: 0 auto;">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profile-avatar">
+                        <!-- Avatar will be set by JavaScript -->
+                    </div>
+                    <h1 id="profile-name" style="font-size: 36px; font-weight: 800; margin-bottom: 8px;"></h1>
+                    <p id="profile-email" style="font-size: 16px; opacity: 0.9; margin-bottom: 16px;"></p>
+                    <div class="earnings-badge" id="earnings-badge">
+                        💰 Total Earnings: Loading...
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="posted-count">0</div>
+                        <div class="profile-stat-label">Services Posted</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="requested-count">0</div>
+                        <div class="profile-stat-label">Services Requested</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="completed-count">0</div>
+                        <div class="profile-stat-label">Completed Services</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="earnings-count">KSh0</div>
+                        <div class="profile-stat-label">Total Earnings</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--white); padding: 40px; border-radius: 20px; box-shadow: var(--shadow);">
+                    <h2 style="margin-bottom: 24px; font-size: 24px; font-weight: 800;">Profile Information</h2>
+
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="profileEmail" disabled style="background: var(--bg-cream);">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label>M-Pesa Number</label>
+                            <input type="text" id="profileMpesa" placeholder="Enter your M-Pesa number">
+                        </div>
+                        <div class="form-group">
+                            <label>About Me</label>
+                            <textarea id="profileDescription" rows="4" placeholder="Tell others about yourself and your skills..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/services.js"></script>
+    <script>
+        async function initUserProfile() {
+            // Check authentication
+            if (!await requireAuth()) return;
+
+            // Load user data
+            await Promise.all([
+                loadMyServices(),
+                loadRequestedServices(),
+                loadServiceRequests(),
+                loadUserEarnings()
+            ]);
+
+            // Update profile information
+            updateProfileDisplay();
+            setupEventListeners();
+        }
+
+        function updateProfileDisplay() {
+            // Basic profile info
+            document.getElementById('profile-avatar').textContent = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+            document.getElementById('profile-name').textContent = currentUser.name;
+            document.getElementById('profile-email').textContent = currentUser.email;
+
+            // Form fields
+            document.getElementById('profileName').value = currentUser.name || '';
+            document.getElementById('profileEmail').value = currentUser.email;
+            document.getElementById('profilePhone').value = currentUser.phone || '';
+            document.getElementById('profileMpesa').value = currentUser.mpesa_number || '';
+            document.getElementById('profileDescription').value = currentUser.description || '';
+
+            // Stats
+            document.getElementById('posted-count').textContent = state.myServices.length;
+            document.getElementById('requested-count').textContent = state.requestedServices.length;
+            document.getElementById('completed-count').textContent = state.serviceRequests.filter(r => r.status === 'completed').length;
+            document.getElementById('earnings-count').textContent = `KSh${state.userEarnings}`;
+            document.getElementById('earnings-badge').textContent = `💰 Total Earnings: KSh${state.userEarnings}`;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('profile-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const data = {
+                    name: document.getElementById('profileName').value,
+                    phone: document.getElementById('profilePhone').value,
+                    mpesa_number: document.getElementById('profileMpesa').value,
+                    description: document.getElementById('profileDescription').value
+                };
+
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Updating...';
+                submitBtn.disabled = true;
+
+                try {
+                    await updateProfile(data);
+                    alert('Profile updated successfully!');
+                    updateProfileDisplay();
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        // Initialize user profile when page loads
+        document.addEventListener('DOMContentLoaded', initUserProfile);
+    </script>
+</body>
+</html>
