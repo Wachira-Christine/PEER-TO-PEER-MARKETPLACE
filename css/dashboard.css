@@ -1,15 +1,17 @@
-/* Dashboard specific styles */
+/* Dashboard page header spacing */
 .dashboard-header {
     margin-bottom: 40px;
 }
 
+/* Grid layout for stats cards */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive cards */
+    gap: 24px; /* Space between cards */
     margin: 40px 0;
 }
 
+/* Individual stat card */
 .stat-card {
     background: var(--white);
     padding: 32px;
@@ -17,15 +19,17 @@
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
-    transition: all 0.3s;
+    transition: all 0.3s; /* Smooth hover effect */
     cursor: pointer;
 }
 
+/* Hover movement and shadow */
 .stat-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 
+/* Top accent bar on cards */
 .stat-card::before {
     content: '';
     position: absolute;
@@ -35,10 +39,12 @@
     height: 5px;
 }
 
+/* Different color themes */
 .stat-card.teal::before { background: var(--primary); }
 .stat-card.beige::before { background: var(--secondary); }
 .stat-card.green::before { background: var(--accent); }
 
+/* Large stat number */
 .stat-value {
     font-size: 42px;
     font-weight: 800;
@@ -46,16 +52,17 @@
     margin-bottom: 12px;
 }
 
+/* Label below stat number */
 .stat-label {
     color: var(--text-gray);
     font-size: 14px;
     font-weight: 600;
 }
 
-/* Responsive adjustments for dashboard */
+/* Mobile responsiveness */
 @media (max-width: 768px) {
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* One card per row on small screens */
     }
 
     .nav-actions {

@@ -1,26 +1,29 @@
-/* Messaging specific styles */
+/* Main chat layout */
 .chat-container {
     background: var(--white);
     border-radius: 20px;
     box-shadow: var(--shadow);
     overflow: hidden;
     display: flex;
-    height: 600px;
+    height: 600px; /* Fixed chat height */
 }
 
+/* Sidebar showing conversations */
 .chat-sidebar {
     width: 320px;
     min-width: 320px;
     border-right: 2px solid var(--bg-cream);
-    overflow-y: auto;
+    overflow-y: auto; /* Scrollable conversation list */
 }
 
+/* Main chat area */
 .chat-main {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
+/* Conversation item styling */
 .chat-conversation {
     padding: 20px;
     border-bottom: 2px solid var(--bg-cream);
@@ -28,23 +31,27 @@
     transition: all 0.3s;
 }
 
+/* Hover effect for conversations */
 .chat-conversation:hover {
     background: var(--bg-cream);
 }
 
+/* Active conversation highlight */
 .chat-conversation.active {
     background: rgba(13, 148, 136, 0.1);
     border-left: 4px solid var(--primary);
 }
 
+/* Area where messages appear */
 .chat-messages {
     flex: 1;
     padding: 24px;
-    overflow-y: auto;
+    overflow-y: auto; /* Scroll messages */
     display: flex;
     flex-direction: column;
 }
 
+/* Input section at bottom */
 .chat-input {
     padding: 20px;
     border-top: 2px solid var(--bg-cream);
@@ -53,6 +60,7 @@
     background: var(--white);
 }
 
+/* Text input styling */
 .chat-input input {
     flex: 1;
     padding: 14px 20px;
@@ -61,6 +69,7 @@
     font-size: 15px;
 }
 
+/* Message bubble style */
 .message-bubble {
     display: inline-block;
     padding: 12px 18px;
@@ -69,27 +78,31 @@
     word-wrap: break-word;
 }
 
+/* Received message style */
 .message.received .message-bubble {
     background: var(--bg-cream);
     color: var(--text-dark);
 }
 
+/* Sent message style */
 .message.sent .message-bubble {
     background: var(--primary);
     color: var(--white);
 }
 
+/* Align sent messages to the right */
 .message.sent {
     text-align: right;
 }
 
-/* Responsive adjustments for messaging */
+/* Mobile adjustments */
 @media (max-width: 768px) {
     .chat-sidebar {
         width: 100px;
         min-width: 100px;
     }
 
+    /* Hide text in conversation items on small screens */
     .chat-conversation h4,
     .chat-conversation p {
         display: none;

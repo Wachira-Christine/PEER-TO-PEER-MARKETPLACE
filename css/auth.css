@@ -1,65 +1,72 @@
-/* Authentication pages */
+/* Authentication pages container */
 .auth-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: var(--bg-cream);
+    min-height: 100vh; /* Full viewport height */
+    display: flex; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers card within the page */
+    padding: 20px; /* Space around the edges on small screens */
+    background: var(--bg-cream); /* Light background color */
 }
 
+/* Main authentication card box */
 .auth-card {
-    background: var(--white);
-    padding: 40px;
-    border-radius: 24px;
-    box-shadow: var(--shadow-lg);
-    width: 100%;
-    max-width: 450px;
+    background: var(--white); /* Card background */
+    padding: 40px; /* Inner spacing */
+    border-radius: 24px; /* Smooth rounded corners */
+    box-shadow: var(--shadow-lg); /* Drop shadow for elevation */
+    width: 100%; /* Responsive width */
+    max-width: 450px; /* Max size on large screens */
 }
 
+/* Header section with gradient background */
 .auth-header {
-    background: linear-gradient(135deg, var(--primary) 0%, #14b8a6 100%);
-    padding: 40px;
-    border-radius: 16px;
-    text-align: center;
-    margin-bottom: 30px;
-    color: var(--white);
+    background: linear-gradient(135deg, var(--primary) 0%, #14b8a6 100%); /* Color gradient */
+    padding: 40px; /* Inner spacing */
+    border-radius: 16px; /* Rounded corners */
+    text-align: center; /* Centers text */
+    margin-bottom: 30px; /* Space below header */
+    color: var(--white); /* White text color */
 }
 
+/* Header title styling */
 .auth-header h1 {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: flex;
+    font-size: 32px; /* Large text size */
+    font-weight: 700; /* Bold text */
+    margin-bottom: 8px; /* Space below heading */
+    display: flex; /* Aligns icon + text */
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 10px; /* Space between icon and text */
 }
 
+/* Container for Login/Register tabs */
 .auth-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
+    display: flex; /* Tabs placed side by side */
+    gap: 10px; /* Spacing between tabs */
+    margin-bottom: 30px; /* Space below tabs */
 }
 
+/* Individual tab styling */
 .auth-tab {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
+    flex: 1; /* Both tabs take equal width */
+    padding: 14px; /* Inner spacing */
+    border: none; /* Removes default button border */
+    border-radius: 12px; /* Rounded edges */
     font-size: 16px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: var(--bg-cream);
-    color: var(--text-gray);
+    cursor: pointer; /* Shows click pointer */
+    transition: all 0.3s; /* Smooth hover/active animation */
+    background: var(--bg-cream); /* Default tab background */
+    color: var(--text-gray); /* Default tab text */
 }
 
+/* Active tab (selected state) */
 .auth-tab.active {
-    background: var(--primary);
-    color: var(--white);
+    background: var(--primary); /* Highlight color */
+    color: var(--white); /* White text on active */
 }
 
+/* Hover effect on inactive tabs */
 .auth-tab:not(.active):hover {
-    background: #e5e7eb;
+    background: #e5e7eb; /* Light gray hover color */
 }

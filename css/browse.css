@@ -1,11 +1,12 @@
-/* Browse page specific styles */
+/* Search bar and filter layout */
 .search-container {
     display: flex;
-    gap: 12px;
+    gap: 12px; /* Space between items */
     margin-bottom: 30px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allows wrapping on small screens */
 }
 
+/* Search field styling */
 .search-input {
     flex: 1;
     min-width: 300px;
@@ -14,15 +15,17 @@
     border-radius: 12px;
     font-size: 15px;
     background: var(--white);
-    transition: all 0.3s;
+    transition: all 0.3s; /* Smooth focus effect */
 }
 
+/* Search input focus outline */
 .search-input:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
 }
 
+/* Filter dropdown styling */
 .filter-select {
     padding: 14px 20px;
     border: 2px solid #e5e7eb;
@@ -33,19 +36,20 @@
     transition: all 0.3s;
 }
 
+/* Filter dropdown focus effect */
 .filter-select:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
 }
 
-/* Responsive adjustments for browse page */
+/* Responsive layout for smaller screens */
 @media (max-width: 768px) {
     .search-container {
-        flex-direction: column;
+        flex-direction: column; /* Stack items vertically */
     }
 
     .search-input, .filter-select {
-        min-width: 100%;
+        min-width: 100%; /* Full-width fields on mobile */
     }
 }
