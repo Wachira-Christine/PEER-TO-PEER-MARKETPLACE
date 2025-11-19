@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>StudentHub — Messages</title>
+  <link rel="stylesheet" href="/static/chat.css" />
+</head>
+<body class="sh-root sh-chat-root">
+  <nav class="sh-topbar">
+    <div class="sh-topbar-left">
+      <div class="sh-logo">SH</div>
+      <div>
+        <div class="sh-app-title">StudentHub</div>
+        <div class="muted small">Marketplace</div>
+      </div>
+    </div>
+    <div class="sh-topbar-right">
+      <button id="logoutBtn" class="btn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="sh-container">
+    <aside class="sh-sidebar">
+      <div class="sidebar-header">
+        <h2>Messages</h2>
+        <div id="conversationsLoading" class="muted small">Loading…</div>
+      </div>
+      <div class="search-wrap">
+        <input id="conversationSearch" placeholder="Search conversations…" />
+      </div>
+
+      <ul id="conversationsList" class="conversations-list" aria-live="polite">
+        <!-- conversation items populated by JS -->
+      </ul>
+    </aside>
+
+    <section class="sh-thread-area">
+      <div id="threadHeader" class="thread-header muted">Select a conversation</div>
+
+      <div id="messagesPane" class="messages-pane">
+        <!-- messages will render here -->
+      </div>
+
+      <div id="composer" class="composer hidden">
+        <div id="typingIndicator" class="typing muted small"></div>
+
+        <div class="composer-row">
+          <input id="messageInput" type="text" placeholder="Type a message…" autocomplete="off" />
+          <button id="sendBtn" class="btn primary">Send</button>
+        </div>
+
+        <div id="sendStatus" class="sh-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/utils.js"></script>
+  <script src="/static/chat.js"></script>
+</body>
+</html>

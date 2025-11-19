@@ -1,0 +1,70 @@
+/* Chat UI — StudentHub palette (darkTeal, teal, gold, beige) */
+:root{
+  --dark-teal:#0d4d4d;
+  --teal:#1a7f7f;
+  --light-green:#4ade80;
+  --sage:#84a98c;
+  --tan:#d4a574;
+  --beige:#f5e6d3;
+  --gold:#fbbf24;
+  --dark-gold:#f59e0b;
+  --muted:#6b7280;
+  --bg:#f3f4f6;
+}
+
+/* global */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+.sh-root{min-height:100vh;background:linear-gradient(135deg,var(--beige) 0%, #fff 100%);display:flex;flex-direction:column;}
+.muted{color:var(--muted)}
+.small{font-size:0.85rem}
+.hidden{display:none}
+
+/* topbar */
+.sh-topbar{height:64px;background:white;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-bottom:3px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.sh-topbar-left{display:flex;align-items:center;gap:0.75rem}
+.sh-logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--dark-teal));color:white;display:flex;align-items:center;justify-content:center;font-weight:800}
+.sh-app-title{font-weight:700;color:var(--dark-teal)}
+
+/* layout */
+.sh-container{display:grid;grid-template-columns:320px 1fr;gap:1rem;padding:1rem;align-items:start;flex:1 1 auto;max-width:1200px;margin:0 auto;width:100%}
+@media (max-width:900px){.sh-container{grid-template-columns:1fr}.sh-sidebar{display:none}.sh-chat-root .sh-sidebar{display:block}}
+
+/* sidebar */
+.sh-sidebar{background:white;border-radius:14px;border:2px solid var(--beige);box-shadow:0 4px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:1rem;border-bottom:2px solid var(--beige);display:flex;align-items:center;justify-content:space-between}
+.search-wrap{padding:0.75rem;border-bottom:1px solid var(--beige)}
+.search-wrap input{width:100%;padding:0.6rem 0.75rem;border-radius:10px;border:2px solid var(--beige);outline:none}
+
+/* conversations list */
+.conversations-list{list-style:none;margin:0;padding:0;overflow:auto;max-height:calc(100vh - 230px)}
+.conversation-item{display:flex;gap:0.75rem;padding:0.9rem;border-bottom:1px solid var(--beige);cursor:pointer;align-items:center}
+.conversation-item:hover{background:rgba(26,127,127,0.03)}
+.conv-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--teal),var(--dark-teal));color:white;font-weight:700}
+.conv-main{flex:1;min-width:0}
+.conv-top{display:flex;justify-content:space-between;align-items:center}
+.conv-name{font-weight:700;color:var(--dark-teal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-last{font-size:0.9rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread-badge{background:var(--gold);color:var(--dark-teal);padding:0.18rem 0.5rem;border-radius:999px;font-weight:700;font-size:0.75rem}
+
+/* thread area */
+.sh-thread-area{display:flex;flex-direction:column;gap:0.5rem;height:calc(100vh - 96px)}
+.thread-header{padding:1rem;background:linear-gradient(135deg,var(--teal)10,transparent);border-radius:10px;border:2px solid var(--beige)}
+.messages-pane{flex:1;background:linear-gradient(180deg,var(--beige)10,transparent);padding:1rem;border-radius:12px;border:2px solid var(--beige);overflow:auto;display:flex;flex-direction:column;gap:0.75rem}
+.msg-row{display:flex}
+.msg-bubble{max-width:70%;padding:0.8rem 1rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.msg-me{margin-left:auto;background:linear-gradient(135deg,var(--teal),var(--dark-teal));color:white}
+.msg-them{background:white;color:var(--dark-teal)}
+.msg-time{display:block;font-size:0.75rem;opacity:0.8;margin-top:0.25rem}
+
+/* composer */
+.composer{padding:0.75rem;border-radius:12px;border:2px solid var(--beige);background:white;display:flex;flex-direction:column;gap:0.5rem}
+.composer-row{display:flex;gap:0.6rem}
+.composer input{flex:1;padding:0.8rem;border-radius:10px;border:2px solid var(--beige);outline:none}
+.btn{padding:0.6rem 0.9rem;border-radius:10px;border:none;background:transparent;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,var(--gold),var(--dark-gold));color:var(--dark-teal);font-weight:700;box-shadow:0 4px 8px rgba(0,0,0,0.08)}
+.btn:hover{transform:translateY(-1px)}
+
+/* small utilities */
+.sh-status{font-size:0.9rem;margin-top:0.4rem}
+.error{color:#ef4444}
