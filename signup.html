@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
+    // Content
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
@@ -48,9 +49,10 @@
     <script src="js/utils.js"></script>
     <script src="js/auth.js"></script>
     <script>
+        //listen for the sign up form being submitted
         document.getElementById('signup-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-
+            // collect user input
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
