@@ -19,7 +19,7 @@ GROUP MEMBERS
 
 *PROJECT DESCRIPTION*
 
-This is a platform where students can offer and request goods and services amongst each other. The system will feature the following:
+This is a platform where students can offer and request goods and services amongst each other.The system will feature the following:
 
 -Login and registration features with authentication
 
@@ -29,7 +29,7 @@ This is a platform where students can offer and request goods and services among
 
 -Secure payment integration
 
-It is designed to promote collaboration and resource sharing between students, giving them the chance to earn money from their skills and services.
+It is designed to promote collaboration and resource sharing between students as well as entrepreneurship, giving them the chance to earn money from their skills and services.
 
 *STARTER GUIDE*
 
