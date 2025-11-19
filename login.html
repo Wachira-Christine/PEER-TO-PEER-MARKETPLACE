@@ -12,19 +12,19 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <h1><span class="logo-icon">🎒</span> StudentHub</h1>
-                <p>Your Campus Marketplace</p>
+                 <h1><span class="logo-icon">🎒</span> StudentHub</h1>
+                 <p>Your Campus Marketplace</p>
             </div>
 
             <div class="auth-tabs">
-                <button class="auth-tab active">Login</button>
-                <button class="auth-tab" onclick="window.location.href='signup.html'">Register</button>
+                 <button class="auth-tab active">Login</button>
+                 <button class="auth-tab" onclick="window.location.href='signup.html'">Register</button>
             </div>
 
             <form id="login-form">
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="email" required>
+                     <label>Email</label>
+                     <input type="email" id="email" required>
                 </div>
 
                 <div class="form-group">
@@ -47,7 +47,7 @@
          //listen for the sign up form being submitted
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             // collect user input
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
